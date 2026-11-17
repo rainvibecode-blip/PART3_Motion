@@ -127,9 +127,11 @@ function saveJob(job) {
   fs.mkdirSync(jobDir(job), { recursive: true });
   fs.writeFileSync(path.join(jobDir(job), "job.json"), JSON.stringify(publicJob(job), null, 2));
 }
+const USER = (() => { try { return os.userInfo().username; } catch { return ""; } })();
+const maskUser = (text) => (USER.length >= 3 ? text.split(USER).join("user") : text);
 function log(job, kind, text) {
   // 화면 녹화·공유 때 사용자 이름이 든 전체 경로가 보이지 않게, 스튜디오 폴더와 홈 폴더 경로를 줄여 적는다.
-  const line = { t: Date.now(), kind, text: String(text).split(ROOT + path.sep).join("").split(os.homedir()).join("~").slice(0, 6000) };
+  const line = { t: Date.now(), kind, text: maskUser(String(text).split(ROOT + path.sep).join("").split(os.homedir()).join("~")).slice(0, 6000) };
   fs.appendFileSync(path.join(jobDir(job), "log.jsonl"), JSON.stringify(line) + "\n");
   job.lastLog = { kind, text: line.text.split("\n")[0].slice(0, 200) };
   for (const res of streams.get(job.id) || []) res.write(`event: log\ndata: ${JSON.stringify(line)}\n\n`);

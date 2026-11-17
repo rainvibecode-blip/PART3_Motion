@@ -1,0 +1,27 @@
+{
+  "name": "studio-001-mono-template",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Studio_001 흑백 인포그래픽 Remotion 템플릿",
+  "scripts": {
+    "dev": "remotion studio src/index.ts",
+    "check": "tsc",
+    "stills": "node tools/stills.mjs",
+    "render": "node tools/render.mjs"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.484",
+    "@remotion/cli": "4.0.484",
+    "@remotion/layout-utils": "4.0.484",
+    "@remotion/paths": "4.0.484",
+    "@remotion/renderer": "4.0.484",
+    "@remotion/shapes": "4.0.484",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.484"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
+  }
+}

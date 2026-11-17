@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio_001</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23111111'/><path d='M12.5 9.6v12.8a.9.9 0 0 0 1.36.77l10.4-6.4a.9.9 0 0 0 0-1.54l-10.4-6.4a.9.9 0 0 0-1.36.77z' fill='white'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/style.css">
+<script src="/icons.js"></script>
+<script>(function(){try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M12.5 9.6v12.8a.9.9 0 0 0 1.36.77l10.4-6.4a.9.9 0 0 0 0-1.54l-10.4-6.4a.9.9 0 0 0-1.36.77z"/></svg></span>
+      <div class="brand-name"><b>Studio_001</b><small><span class="online"></span>모션 영상 · 로컬</small></div>
+      <a class="compose" href="#/new" title="새 영상 만들기" aria-label="새 영상 만들기"><i class="ic ic-compose" aria-hidden="true"></i></a>
+    </div>
+    <nav id="nav">
+      <a href="#/new" data-route="new"><i class="ic ic-plus" aria-hidden="true"></i>새 영상 만들기</a>
+      <a href="#/videos" data-route="videos"><i class="ic ic-video" aria-hidden="true"></i>영상<span class="cnt" id="cnt-videos"></span></a>
+      <a href="#/jobs" data-route="jobs"><i class="ic ic-activity" aria-hidden="true"></i>작업<span class="cnt live" id="cnt-jobs"></span></a>
+      <a href="#/settings" data-route="settings"><i class="ic ic-settings" aria-hidden="true"></i>설정</a>
+    </nav>
+    <div class="theme-seg" id="theme-seg" role="group" aria-label="화면 밝기">
+      <button type="button" data-theme-set="system">시스템</button>
+      <button type="button" data-theme-set="light">라이트</button>
+      <button type="button" data-theme-set="dark">다크</button>
+    </div>
+  </aside>
+  <main id="main" class="main"></main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>

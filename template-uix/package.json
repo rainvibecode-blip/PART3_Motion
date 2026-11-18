@@ -1,0 +1,12 @@
+{
+  "name": "studio-001-uix-template",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Studio_001 UI 해설 모션 HyperFrames 템플릿 (ui-explainer-motion 스킬)",
+  "scripts": {
+    "check": "npx --yes hyperframes@0.9.65 check",
+    "stills": "node tools/stills.mjs",
+    "render": "node tools/render.mjs"
+  }
+}

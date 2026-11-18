@@ -232,6 +232,7 @@ pre.doc{white-space:pre-wrap;word-break:break-word;font:inherit;line-height:1.7;
 .scard.on::before{content:"";position:absolute;right:14px;top:16px;width:12px;height:12px;z-index:1;background:var(--on-blue);-webkit-mask:var(--ic-check) center/contain no-repeat;mask:var(--ic-check) center/contain no-repeat}
 .presets .scard.on::before{right:12px;top:12px}
 .scard b{display:block;font-size:14.5px;margin-bottom:2px}.scard small{font-size:12px;opacity:.85;display:block;line-height:1.4}
+.scard:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .techs{display:flex;flex-direction:column;gap:6px}
 .techs label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;background:var(--row);font-size:13px;cursor:pointer}
 .techs input{margin-top:3px}

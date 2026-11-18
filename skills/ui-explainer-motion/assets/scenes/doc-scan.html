@@ -1,0 +1,89 @@
+<!-- 씬 "dc": 라이트 캔버스의 문서 변환 + 규모 샷.
+     파랑 스캔 라인이 원본 문서를 2.2초에 위→아래로 훑는 동안 변환본이 한 줄씩
+     채워진다. 이어서 카메라가 멀리 빠지면서 두 문서가 수백 칸 격자의 한 칸이
+     되고, 색 물결이 왼쪽→오른쪽으로 모든 칸을 지나간다("이걸 대량으로"). -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #dc-grid { position: absolute; inset: 0; }
+    #dc-stage { position: absolute; inset: 0; }
+    .dc-label {
+      position: absolute; top: 196px; width: 400px; text-align: center;
+      font-family: var(--uix-font); font-size: 32px; font-weight: 700; color: var(--uix-ink);
+    }
+    #dc-l1 { left: 470px; } #dc-l2 { left: 1050px; color: var(--uix-blue-ink); }
+    #dc-pdf { left: 470px; top: 260px; }
+    #dc-md { left: 1050px; top: 260px; }
+    #dc-arrow { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    #dc-arrow path { fill: none; stroke: var(--uix-faint); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    .dc-row { display: flex; align-items: center; gap: 14px; height: 34px; margin: 12px 0; }
+    .dc-row b { width: 40px; flex: none; font-family: "JetBrains Mono", monospace; font-size: 26px; font-weight: 700; color: var(--uix-blue-ink); }
+    .dc-row .uix-skel { margin: 0; flex: none; }
+  </style>
+  <div id="root" data-composition-id="dc" data-width="1920" data-height="1080">
+    <div class="uix-light">
+      <div class="uix-aura" data-layout-allow-overflow></div>
+      <div id="dc-grid" class="uix-hide" data-layout-ignore></div>
+      <div id="dc-stage" data-layout-allow-overflow>
+        <div id="dc-l1" class="dc-label">PDF 보고서</div>
+        <div id="dc-l2" class="dc-label uix-hide">마크다운</div>
+
+        <div id="dc-pdf" class="uix-doc">
+          <div class="uix-skel m thick"></div>
+          <div class="ph"></div>
+          <div class="uix-skel f"></div>
+          <div class="uix-skel l"></div>
+          <div class="uix-skel f"></div>
+          <div class="uix-skel m"></div>
+          <div class="uix-skel l"></div>
+          <div class="uix-skel s"></div>
+          <div id="dc-scan" class="uix-scan uix-hide">
+            <div class="trail"></div><div class="beam"></div><div class="knob l"></div><div class="knob r"></div>
+          </div>
+        </div>
+
+        <svg id="dc-arrow" viewBox="0 0 1920 1080"><path id="dc-arrow-p" d="M900 520 H1018 M1000 502 L1020 520 L1000 538" /></svg>
+
+        <div id="dc-md" class="uix-doc">
+          <div class="dc-row uix-hide"><b>#</b><div class="uix-skel m thick blue" style="width:200px"></div></div>
+          <div class="dc-row uix-hide"><b>##</b><div class="uix-skel" style="width:150px"></div></div>
+          <div class="dc-row uix-hide"><b>-</b><div class="uix-skel" style="width:250px"></div></div>
+          <div class="dc-row uix-hide"><b>-</b><div class="uix-skel" style="width:210px"></div></div>
+          <div class="dc-row uix-hide"><b>-</b><div class="uix-skel" style="width:270px"></div></div>
+          <div class="dc-row uix-hide"><b>##</b><div class="uix-skel" style="width:170px"></div></div>
+          <div class="dc-row uix-hide"><b>**</b><div class="uix-skel blue" style="width:230px"></div></div>
+          <div class="dc-row uix-hide"><b>-</b><div class="uix-skel" style="width:190px"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var S = UIX.scope("dc");
+      var tl = gsap.timeline({ paused: true });
+
+      // 작은 문서 장식 격자. 두 문서가 내려앉을 자리는 비워 둠
+      var cells = UIX.cells(S.$("#dc-grid"), {
+        cols: 30, rows: 17, gap: 64, x: 12, y: 8,
+        skip: function (x, y) { return Math.abs(x + 20 - 960) < 120 && Math.abs(y + 25 - 540) < 60; },
+      });
+
+      // 1. 원본을 스캔하고, 선 뒤로 변환본이 채워짐
+      UIX.scan(tl, "#dc-scan", 0.5, { dur: 2.2, distance: 512 });
+      UIX.blurIn(tl, "#dc-l2", 0.5);
+      UIX.blurIn(tl, S.$$("#dc-md .dc-row"), 0.75, { stagger: 0.26, y: 8 });
+      UIX.draw(tl, "#dc-arrow-p", 0.4, { dur: 0.4 });
+      UIX.activate(tl, "#dc-md", 2.9);
+
+      // 2. 멀리 빠짐: 두 문서가 큰 격자의 한 칸으로 줄어듦
+      UIX.blurOut(tl, S.$$(".dc-label"), 3.75);
+      tl.fromTo("#dc-stage", { scale: 1 }, { scale: 0.11, duration: 1.1, ease: "power2.inOut", immediateRender: false }, 3.9);
+      UIX.fade(tl, "#dc-grid", 4.45, { dur: 0.45 });
+
+      // 3. 모든 문서에 왼쪽 → 오른쪽 색 물결
+      UIX.wave(tl, cells, 5.3, { span: 1.0, to: { backgroundColor: "#d2e3fc", borderColor: "#8ab4f8" } });
+
+      window.__timelines["dc"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,61 @@
+<!-- 씬 "tk": 토킹헤드 위 그래픽.
+     키네틱 자막(강조 문장에만, 키워드는 노랑), 모프 스티커, 기울어진 CTA,
+     그리고 챕터 카드로 넘기는 TV 끄기.
+     #tk-face는 자리표시자다. 본인 영상을 안에 넣는다. 예:
+       <video id="tk-video" class="clip" data-start="0" data-duration="7.5"
+              data-has-audio="true" playsinline src="assets/talk.mp4"
+              style="width:100%;height:100%;object-fit:cover"></video>
+     그리고 .uix-talk-ph 블록을 지운다. 자막 단어마다 data-t(자막 시작부터의 초)를
+     적어 목소리에 맞춘다. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #0b0b0c; }
+    #tk-layer { position: absolute; inset: 0; overflow: hidden; }
+    #tk-sticker { left: 1300px; top: 230px; width: 400px; height: 400px; font-size: 46px; }
+    #tk-cta { left: 0; right: 0; bottom: 110px; display: flex; justify-content: center; }
+  </style>
+  <div id="root" data-composition-id="tk" data-width="1920" data-height="1080">
+    <div id="tk-layer">
+      <div id="tk-face" class="uix-talk-ph">
+        <svg class="uix-person" viewBox="0 0 160 90" preserveAspectRatio="xMidYMax slice">
+          <circle cx="80" cy="38" r="14" />
+          <path d="M44 90 C46 64 60 56 80 56 C100 56 114 64 116 90 Z" />
+        </svg>
+      </div>
+
+      <div id="tk-cap1" class="uix-caps">AI를 쓰는 사람과 <span class="hl">잘 쓰는 사람</span>의 차이는</div>
+      <div id="tk-cap2" class="uix-caps">딱 <span class="hl">여섯 가지 습관</span>에서 갈립니다</div>
+
+      <div id="tk-sticker" class="uix-sticker uix-hide"><div>설명란 링크를<br />눌러 보세요</div></div>
+
+      <div id="tk-cta" class="uix-cta uix-hide">
+        <div class="uix-cta-shape uix-ko"><span>자료는 설명란에 ↓</span></div>
+      </div>
+    </div>
+    <div id="tk-v" class="uix-crt-v"></div>
+    <div id="tk-h" class="uix-crt-h"></div>
+  </div>
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+
+      // 자막: 단어가 약 0.11초 간격으로 등장 (실제 음성 타이밍은 span의 data-t로)
+      UIX.words(tl, "#tk-cap1", 0.25, { step: 0.11 });
+      UIX.blurOut(tl, "#tk-cap1", 2.3);
+      UIX.words(tl, "#tk-cap2", 2.5, { step: 0.11 });
+      UIX.blurOut(tl, "#tk-cap2", 4.05);
+
+      // 스티커: 오렌지 사각형이 돌며 원이 되고 글자가 채워짐
+      UIX.sticker(tl, "#tk-sticker", 3.7);
+      // CTA가 아래에서 올라옴
+      UIX.blurIn(tl, "#tk-cta", 4.35, { y: 40, dur: 0.36 });
+
+      UIX.blurOut(tl, ["#tk-sticker", "#tk-cta"], 6.25, { stagger: 0.05 });
+
+      // TV 끄기(타원 → 슬릿 → 선)로 다음 씬에 넘김
+      UIX.crtOff(tl, "#tk-layer", 6.8, { v: "#tk-v", h: "#tk-h" });
+
+      window.__timelines["tk"] = tl;
+    })();
+  </script>
+</template>

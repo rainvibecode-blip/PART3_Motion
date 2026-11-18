@@ -1,0 +1,12 @@
+Pretendard
+Copyright (c) 2021, Kil Hyung-jin (https://github.com/orioncactus/pretendard)
+
+이 서체는 SIL Open Font License 1.1(OFL)로 배포된다.
+전문: https://openfontlicense.org/open-font-license-official-text/
+
+이 폴더의 .woff2 파일 4개(Medium 500, SemiBold 600, Bold 700, ExtraBold 800)는
+원본을 고치지 않은 사본이다. 네트워크에서 서체를 받지 않고도 HyperFrames가
+한글을 렌더하도록 함께 넣었다.
+
+- 자유롭게 쓰고, 영상에 넣고, 다시 배포할 수 있다.
+- 서체 파일만 따로 판매할 수는 없다.

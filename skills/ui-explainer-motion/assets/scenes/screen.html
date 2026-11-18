@@ -1,0 +1,137 @@
+<!-- 씬 "sc": 다크 점 그리드 캔버스의 화면녹화 연출.
+     둥근 창 + 얼굴 PiP, 느린 푸시 인, 앰버 하이라이트 박스, 어둡게 + 스포트라이트
+     크롭과 형광펜, 커서 클릭과 리플, 리더 라인 주석, 타이핑되는 CHAT 태그,
+     키캡, RGB 떨림이 있는 빨리감기, 2프레임 글리치로 퇴장.
+     창 안은 스켈레톤 목업이다. 본인 녹화를 넣는다. 예:
+       <video id="sc-rec" class="clip" data-start="0" data-duration="11.4"
+              muted playsinline src="assets/screen.mp4"></video>
+     (또는 <img>) 그리고 .uix-mock을 지운다. #sc-hbox, 주석, 커서 경로를 실제
+     화면에 맞춰 옮긴다. #sc-pip도 자리표시자다. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #sc-cam { position: absolute; inset: 0; }
+    #sc-win { left: 470px; top: 110px; width: 1340px; height: 800px; }
+    #sc-pip { left: 110px; top: 400px; }
+    #sc-hbox { left: 14px; top: 132px; width: 272px; height: 58px; }
+    #sc-focus { left: 470px; top: 330px; width: 980px; }
+    #sc-cursor { left: 1500px; top: 560px; }
+    #sc-ripple { left: 1726px; top: 839px; }
+    #sc-dot { left: 990px; top: 440px; }
+    #sc-callbox { left: 1190px; top: 548px; }
+    #sc-tag { left: 840px; width: 240px; bottom: 56px; text-align: center; }
+    #sc-keys { left: 0; right: 0; bottom: 70px; justify-content: center; }
+    .sc-mono { color: #e8eaed; }
+  </style>
+  <div id="root" data-composition-id="sc" data-width="1920" data-height="1080">
+    <div id="sc-ground" class="uix-dark">
+      <div id="sc-cam" data-layout-allow-overflow>
+        <div id="sc-win" class="uix-window">
+          <div class="uix-window-bar"><i></i><i></i><i></i></div>
+          <div class="uix-window-body">
+            <div class="uix-mock">
+              <div class="uix-mock-side">
+                <div class="uix-mock-row"><i style="width:160px"></i></div>
+                <div class="uix-mock-row"><i style="width:120px"></i></div>
+                <div class="uix-mock-row sel"><i style="width:180px"></i></div>
+                <div class="uix-mock-row"><i style="width:140px"></i></div>
+                <div class="uix-mock-row"><i style="width:170px"></i></div>
+                <div class="uix-mock-row"><i style="width:110px"></i></div>
+              </div>
+              <div class="uix-mock-main">
+                <div class="uix-bubble me">회의록을 세 줄로 요약하고, 다음 할 일은 담당자별로 정리해 줘.</div>
+                <div class="uix-bubble ai">
+                  <div class="uix-skel l"></div><div class="uix-skel f"></div><div class="uix-skel m"></div>
+                  <div class="uix-skel f"></div><div class="uix-skel s"></div>
+                </div>
+                <div class="uix-input">무엇이든 물어보세요<span class="uix-send"></span></div>
+              </div>
+            </div>
+            <div id="sc-hbox" class="uix-hbox uix-hide"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sc-pip" class="uix-pip">
+        <div class="uix-talk-ph">
+          <svg class="uix-person" viewBox="0 0 100 120" preserveAspectRatio="xMidYMax slice">
+            <circle cx="50" cy="52" r="18" />
+            <path d="M14 120 C16 90 30 80 50 80 C70 80 84 90 86 120 Z" />
+          </svg>
+        </div>
+      </div>
+
+      <div id="sc-dim" class="uix-dim uix-hide"></div>
+      <div id="sc-focus" class="uix-focus uix-hide">
+        회의록을 <span class="uix-mark">세 줄로 요약</span>하고, 다음 할 일은 <span class="uix-mark">담당자별로 정리</span>해 줘.
+      </div>
+
+      <svg id="sc-cursor" class="uix-cursor uix-hide" viewBox="0 0 34 44"><path d="M3 2 L3 34 L11 26 L17 40 L23 37 L17 24 L29 24 Z" fill="#fff" stroke="#111" stroke-width="2.4" stroke-linejoin="round" /></svg>
+      <div id="sc-ripple" class="uix-ripple uix-hide"></div>
+
+      <div class="uix-callout">
+        <div id="sc-dot" class="uix-callout-dot uix-hide"></div>
+        <svg viewBox="0 0 1920 1080"><path id="sc-lead" d="M990 440 L1184 584" /></svg>
+        <div id="sc-callbox" class="uix-callout-box uix-hide">답변이 <b>세 줄</b>로 정리됩니다</div>
+      </div>
+
+      <div id="sc-tag" class="uix-tagwrap">
+        <div id="sc-tagbox" class="box uix-hide"></div>
+        <span id="sc-tagtext" class="txt">CHAT #1</span>
+      </div>
+
+      <div id="sc-keys" class="uix-keys uix-hide">
+        <span class="uix-key">⌘</span><span class="plus">+</span><span class="uix-key alt">K</span>
+      </div>
+
+      <div id="sc-ff" class="uix-ff uix-hide">
+        <svg viewBox="0 0 470 260"><path d="M20 20 L230 130 L20 240 Z M240 20 L450 130 L240 240 Z" fill="#fff" /></svg>
+      </div>
+      <div id="sc-glitch" class="uix-glitch"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+
+      // 대화 쪽으로 느린 푸시 인 (0초에는 창과 PiP가 제자리)
+      UIX.pushIn(tl, "#sc-cam", 0.3, { scale: 1.06, origin: "62% 60%", dur: 2.0 });
+
+      // 선택된 사이드바 행 둘레에 앰버 박스가 왼쪽 → 오른쪽으로 그려짐
+      UIX.growX(tl, "#sc-hbox", 0.9, { dur: 0.5 });
+      UIX.fadeOut(tl, "#sc-hbox", 2.2);
+
+      // 스포트라이트: 화면 어둡게·흐리게, 발췌 카드 착지, 형광펜
+      UIX.spotlight(tl, "#sc-dim", "#sc-focus", 2.45);
+      UIX.marker(tl, "#sc-focus .uix-mark", 2.95, { dur: 0.4, stagger: 0.45 });
+      UIX.spotlightOut(tl, "#sc-dim", "#sc-focus", 5.95);
+
+      // 커서가 전송 버튼으로 미끄러져 가서 클릭
+      UIX.fade(tl, "#sc-cursor", 6.2, { dur: 0.15 });
+      tl.fromTo("#sc-cursor", { x: 0, y: 0 }, { x: 223, y: 277, duration: 0.6, ease: "power2.inOut", immediateRender: false }, 6.25);
+      UIX.ripple(tl, "#sc-ripple", 6.9);
+      UIX.fadeOut(tl, "#sc-cursor", 7.25, { dur: 0.15 });
+
+      // 답변에 리더 라인 주석
+      UIX.callout(tl, "#sc-dot", "#sc-lead", "#sc-callbox", 7.2);
+      UIX.blurOut(tl, ["#sc-dot", "#sc-callbox"], 9.05);
+      UIX.fadeOut(tl, "#sc-lead", 9.05, { dur: 0.15 });
+
+      // 태그: 박스가 가운데서 열리고, 글자가 타이핑되고, 접혀 사라짐
+      UIX.tagIn(tl, "#sc-tagbox", "#sc-tagtext", 7.35);
+      UIX.tagOut(tl, "#sc-tagbox", "#sc-tagtext", 8.95);
+
+      // 키캡
+      UIX.pop(tl, "#sc-keys", 9.2, { from: 0.8, stagger: 0 });
+      UIX.blurOut(tl, "#sc-keys", 9.95);
+
+      // 기다리는 구간은 빨리감기
+      UIX.fastForward(tl, "#sc-ff", "#sc-win", 10.1, 1.2);
+
+      // 2프레임 글리치로 퇴장
+      UIX.glitch(tl, "#sc-ground", 11.33, { frames: 2, bars: "#sc-glitch" });
+
+      window.__timelines["sc"] = tl;
+    })();
+  </script>
+</template>

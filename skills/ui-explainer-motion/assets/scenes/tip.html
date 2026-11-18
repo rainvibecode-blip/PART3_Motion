@@ -1,0 +1,85 @@
+<!-- 씬 "tp": 도형 와이프가 있는 TIP #n 타이틀 카드(약 0.9초 후 고정).
+     프레임 0~8은 삼각형 와이프다(흰 노치가 있는 검정 쐐기 → 더 큰 노치 →
+     흰 바탕에 검정 톱니 → 흰 모서리가 남은 검정). 이어 원근으로 기울어진
+     아웃라인 제목이 제자리에 꽂히고, 파랑 스트로크와 테두리가 번쩍인 뒤,
+     실제 제목이 자리 잡고 TIP #n이 페이드인한다.
+     첫 프레임들은 일부가 투명하다. 이 호스트를 앞 씬이 끝나기 약 0.2초 전에,
+     앞 씬보다 위에 올려 두면 쐐기가 나가는 화면 위를 자른다. -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #tp-ground { opacity: 0; }
+    #tp-lock { top: 380px; }
+    #tp-ghostwrap { position: absolute; left: 0; right: 0; top: 448px; text-align: center; }
+    #tp-para {
+      position: absolute; left: 50%; top: 452px; width: 980px; height: 132px; margin-left: -490px;
+      border: 4px solid #4c8df6; transform: skewX(-18deg); opacity: 0;
+    }
+    #tp-streak { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    #tp-streak path { fill: none; stroke: #4c8df6; stroke-width: 4; stroke-linecap: round; }
+  </style>
+  <div id="root" data-composition-id="tp" data-width="1920" data-height="1080">
+    <div class="uix-tip">
+      <div id="tp-ground" class="uix-tip-ground"></div>
+      <svg class="uix-wedges" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+        <rect id="tp-black" width="1920" height="1080" fill="#161618" opacity="0" />
+        <rect id="tp-white" width="1920" height="1080" fill="#ffffff" opacity="0" />
+        <polygon id="tp-a" fill="#161618" opacity="0" points="0,0 1920,0 1920,880 1700,1080 220,1080 0,880" />
+        <polygon id="tp-notch" fill="#ffffff" opacity="0" points="900,0 1020,0 960,80" />
+        <polygon id="tp-t1" fill="#161618" opacity="0" points="0,800 380,1080 0,1080" />
+        <polygon id="tp-t2" fill="#161618" opacity="0" points="740,1080 960,860 1180,1080" />
+        <polygon id="tp-t3" fill="#161618" opacity="0" points="1540,1080 1920,800 1920,1080" />
+        <polygon id="tp-c1" fill="#ffffff" opacity="0" points="0,0 620,0 0,460" />
+        <polygon id="tp-c2" fill="#ffffff" opacity="0" points="1920,0 1300,0 1920,460" />
+      </svg>
+
+      <svg id="tp-streak" viewBox="0 0 1920 1080"><path id="tp-streak-p" d="M560 690 L800 560" /></svg>
+      <div id="tp-para"></div>
+
+      <div id="tp-ghostwrap" data-layout-allow-overflow><div id="tp-ghost" class="uix-tip-title uix-ko uix-outline" style="opacity: 0">마크다운으로 말하기</div></div>
+
+      <div id="tp-lock" class="uix-tip-lock">
+        <div id="tp-eye" class="uix-tip-eyebrow uix-hide">TIP #1</div>
+        <div id="tp-title" class="uix-tip-title uix-ko uix-hide">마크다운으로 말하기</div>
+        <div id="tp-sub" class="uix-tip-sub uix-hide">토큰은 줄이고, 정확도는 올리고</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      var F = UIX.F;
+      var on = function (sel, f) { tl.set(sel, { opacity: 1 }, f * F); };
+      var off = function (sel, f) { tl.set(sel, { opacity: 0 }, f * F); };
+
+      // F0-2: 검정 쐐기, 작은 흰 노치 (모서리로 나가는 화면이 보임)
+      on(["#tp-a", "#tp-notch"], 0);
+      tl.set("#tp-notch", { attr: { points: "900,0 1020,0 960,80" } }, 0);
+      // F3-5: 전체 검정, 더 큰 노치
+      on("#tp-black", 3); off("#tp-a", 3);
+      tl.set("#tp-notch", { attr: { points: "760,0 1160,0 960,330" } }, 3 * F);
+      // F6-8: 흰 바탕, 아래에서 검정 톱니가 솟음
+      off(["#tp-black", "#tp-notch"], 6); on(["#tp-white", "#tp-t1", "#tp-t2", "#tp-t3"], 6);
+      // F9~: 검정 바탕, 흰 모서리가 줄어들며 사라짐
+      off(["#tp-white", "#tp-t1", "#tp-t2", "#tp-t3"], 9); on(["#tp-ground", "#tp-c1", "#tp-c2"], 9);
+      tl.fromTo("#tp-c1", { attr: { points: "0,0 620,0 0,460" } }, { attr: { points: "0,0 0,0 0,0" }, duration: 5 * F, ease: "power2.in", immediateRender: false }, 9 * F);
+      tl.fromTo("#tp-c2", { attr: { points: "1920,0 1300,0 1920,460" } }, { attr: { points: "1920,0 1920,0 1920,0" }, duration: 5 * F, ease: "power2.in", immediateRender: false }, 9 * F);
+
+      // 아웃라인 제목이 기울어진 원근에서 날아와 꽂힘
+      tl.fromTo("#tp-ghost",
+        { opacity: 1, x: 420, y: -40, scale: 1.45, rotationY: -38, rotationZ: -9, skewX: -12, transformPerspective: 900 },
+        { x: 0, y: 0, scale: 1, rotationY: 0, rotationZ: 0, skewX: 0, duration: 0.3, ease: "expo.out", immediateRender: false }, 9 * F);
+      UIX.draw(tl, "#tp-streak-p", 11 * F, { dur: 4 * F, ease: "power2.out" });
+      off("#tp-streak", 16);
+      on("#tp-para", 16); off("#tp-para", 18);
+
+      // 실제 제목이 자리 잡고, 아웃라인 복사본은 사라짐
+      off("#tp-ghost", 18);
+      tl.set("#tp-title", { opacity: 1 }, 18 * F);
+      UIX.fade(tl, "#tp-sub", 18 * F, { dur: 0.15 });
+      UIX.blurIn(tl, "#tp-eye", 0.9, { y: 8 });
+
+      window.__timelines["tp"] = tl;
+    })();
+  </script>
+</template>

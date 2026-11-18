@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <!-- UI 설명 모션 키트: 토큰 + 컴포넌트, 그다음 타임라인 헬퍼(window.UIX) -->
+    <link rel="stylesheet" href="assets/uix/uix.css" />
+    <script src="assets/uix/uix.js"></script>
+    <style>
+      /* Pretendard (SIL OFL 1.1) — 본문과 모든 한글 제목 */
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-Medium.woff2") format("woff2"); font-weight: 500; }
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-SemiBold.woff2") format("woff2"); font-weight: 600; }
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-Bold.woff2") format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-ExtraBold.woff2") format("woff2"); font-weight: 800; }
+
+      /* 브랜드 색은 여기서 바꾼다: assets/uix/uix.css의 --uix-* 토큰 무엇이든 */
+      :root {
+        --uix-blue: #1a73e8;
+        --uix-amber: #fbbc04;
+      }
+
+      /* 키트가 쓰는 번들 서체. 렌더 컴파일러는 이 파일에 적힌 서체 이름만
+         임베드하고 링크된 uix.css는 읽지 않아서 여기에 이름을 적어 둔다. */
+      .uix-font-names { font-family: "Inter", "Oswald", "EB Garamond", "Playfair Display", "JetBrains Mono"; }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #ffffff; }
+      #root { position: relative; width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <!-- 데모 릴의 씬 순서. 필요 없는 호스트는 지우고 나머지 시간을 다시 맞춘다.
+         루트의 data-duration이 영상 길이다. -->
+    <div id="root" data-composition-id="main" data-start="0" data-duration="50" data-width="1920" data-height="1080">
+      <div id="hl" data-composition-id="hl" data-composition-src="compositions/headlines.html"
+        data-start="0" data-duration="4.6" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="tk" data-composition-id="tk" data-composition-src="compositions/talk.html"
+        data-start="4.6" data-duration="7.5" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="ch" data-composition-id="ch" data-composition-src="compositions/chapter.html"
+        data-start="12.1" data-duration="2.8" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="dg" data-composition-id="dg" data-composition-src="compositions/diagram.html"
+        data-start="14.9" data-duration="7.5" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="fl" data-composition-id="fl" data-composition-src="compositions/flow.html"
+        data-start="22.4" data-duration="6.4" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="dc" data-composition-id="dc" data-composition-src="compositions/doc-scan.html"
+        data-start="28.8" data-duration="7.2" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <!-- TIP 카드는 0.2초 일찍, 나가는 씬보다 위에서 시작해 쐐기가 그 화면 위를 자른다 -->
+      <div id="tp" data-composition-id="tp" data-composition-src="compositions/tip.html"
+        data-start="35.8" data-duration="2.8" data-track-index="2" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="sc" data-composition-id="sc" data-composition-src="compositions/screen.html"
+        data-start="38.6" data-duration="11.4" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <!-- 눈에 보이는 동작에 맞춘 효과음(assets/sfx, Pixabay 라이선스). 따라가는 씬을 옮기면 함께 옮긴다. -->
+      <audio id="sfx-01" class="clip" data-start="0.5" data-duration="0.57" data-track-index="5" data-volume="0.35" src="assets/sfx/whoosh-short.mp3"></audio> <!-- hl 키워드 박스 A -->
+      <audio id="sfx-02" class="clip" data-start="1.75" data-duration="0.57" data-track-index="5" data-volume="0.35" src="assets/sfx/whoosh-short.mp3"></audio> <!-- hl 키워드 박스 B -->
+      <audio id="sfx-03" class="clip" data-start="3.35" data-duration="0.57" data-track-index="5" data-volume="0.35" src="assets/sfx/whoosh-short.mp3"></audio> <!-- hl 키워드 박스 C -->
+      <audio id="sfx-04" class="clip" data-start="8.3" data-duration="0.72" data-track-index="6" data-volume="0.45" src="assets/sfx/pop.mp3"></audio> <!-- tk 스티커 -->
+      <audio id="sfx-05" class="clip" data-start="8.95" data-duration="0.57" data-track-index="5" data-volume="0.3" src="assets/sfx/whoosh-short.mp3"></audio> <!-- tk CTA -->
+      <audio id="sfx-06" class="clip" data-start="11.45" data-duration="0.57" data-track-index="5" data-volume="0.4" src="assets/sfx/whoosh-short.mp3"></audio> <!-- tk TV 끄기 -->
+      <audio id="sfx-07" class="clip" data-start="12.5" data-duration="2.5" data-track-index="8" data-volume="0.35" src="assets/sfx/chime.mp3"></audio> <!-- ch 타이틀 착지 -->
+      <audio id="sfx-08" class="clip" data-start="15.2" data-duration="0.72" data-track-index="6" data-volume="0.4" src="assets/sfx/pop.mp3"></audio> <!-- dg 숫자 원 -->
+      <audio id="sfx-09" class="clip" data-start="16.15" data-duration="0.57" data-track-index="5" data-volume="0.25" src="assets/sfx/whoosh-short.mp3"></audio> <!-- dg 그룹 분리 -->
+      <audio id="sfx-10" class="clip" data-start="21.95" data-duration="0.57" data-track-index="5" data-volume="0.45" src="assets/sfx/whoosh-short.mp3"></audio> <!-- dg 줌 스루 -->
+      <audio id="sfx-11" class="clip" data-start="23.9" data-duration="0.72" data-track-index="6" data-volume="0.4" src="assets/sfx/pop.mp3"></audio> <!-- fl 첫 체크 -->
+      <audio id="sfx-12" class="clip" data-start="24.92" data-duration="1.8" data-track-index="7" data-volume="0.35" src="assets/sfx/sparkle.mp3"></audio> <!-- fl 노드 스왑 -->
+      <audio id="sfx-13" class="clip" data-start="25.75" data-duration="0.72" data-track-index="6" data-volume="0.4" src="assets/sfx/pop.mp3"></audio> <!-- fl 체크 -->
+      <audio id="sfx-14" class="clip" data-start="32.7" data-duration="0.57" data-track-index="5" data-volume="0.35" src="assets/sfx/whoosh-short.mp3"></audio> <!-- dc 줌아웃 -->
+      <audio id="sfx-15" class="clip" data-start="34.1" data-duration="1.8" data-track-index="7" data-volume="0.3" src="assets/sfx/sparkle.mp3"></audio> <!-- dc 색 물결 -->
+      <audio id="sfx-16" class="clip" data-start="36.05" data-duration="0.57" data-track-index="5" data-volume="0.45" src="assets/sfx/whoosh-short.mp3"></audio> <!-- tp 쐐기 + 제목 꽂힘 -->
+      <audio id="sfx-17" class="clip" data-start="41.55" data-duration="1.8" data-track-index="7" data-volume="0.3" src="assets/sfx/sparkle.mp3"></audio> <!-- sc 형광펜 -->
+      <audio id="sfx-18" class="clip" data-start="45.5" data-duration="0.72" data-track-index="6" data-volume="0.45" src="assets/sfx/pop.mp3"></audio> <!-- sc 클릭 -->
+      <audio id="sfx-19" class="clip" data-start="47.8" data-duration="0.72" data-track-index="6" data-volume="0.4" src="assets/sfx/pop.mp3"></audio> <!-- sc 키캡 -->
+      <audio id="sfx-20" class="clip" data-start="48.7" data-duration="0.57" data-track-index="5" data-volume="0.35" src="assets/sfx/whoosh-short.mp3"></audio> <!-- sc 빨리감기 -->
+    </div>
+    <script>
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!-- 씬 "ch": TV 끄기 다음에 오는 챕터 카드.
+     성긴 "+" 점이 깔린 다크 바탕에서 꺼진 화면의 선이 잠깐 깜빡이고,
+     타이틀 묶음이 엉뚱한 크기로 1프레임씩 번쩍인 뒤, 금색 사선이 지나가고,
+     타이틀이 자리 잡아 완전히 멈춘다.
+     세 타일에는 어떤 아이콘이든 넣을 수 있다. 각 .uix-app 안에 본인
+     <img src="assets/…">를 넣는다(기본은 범용 글리프 자리표시자). -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #ch-lock { position: absolute; left: 0; right: 0; top: 330px; display: flex; flex-direction: column; align-items: center; gap: 46px; }
+    #ch-icons { display: flex; align-items: center; gap: 34px; }
+    #ch-icons .plus { font-family: var(--uix-font); font-size: 56px; font-weight: 600; color: #fff; }
+    #ch-title { font-size: 82px; line-height: 1.22; }
+    #ch-dash { position: absolute; left: 330px; top: 538px; width: 70px; height: 4px; background: var(--uix-gold); opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="ch" data-width="1920" data-height="1080">
+    <div class="uix-chapter">
+      <div id="ch-crosses" class="uix-crosses"></div>
+
+      <svg class="uix-gold-lines" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+        <path id="ch-gl1" d="M560 -20 L1660 560 L1960 380" />
+        <path id="ch-gl2" d="M-40 600 L840 1110" />
+      </svg>
+      <div id="ch-dash"></div>
+
+      <div id="ch-lock" class="uix-hide" data-hold>
+        <div id="ch-icons">
+          <div class="uix-app">
+            <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2.5" fill="none" stroke="#202124" stroke-width="2" /><path d="M8.5 8h7M8.5 12h7M8.5 16h4" stroke="#202124" stroke-width="2" stroke-linecap="round" /></svg>
+          </div>
+          <span class="plus">+</span>
+          <div class="uix-app">
+            <svg viewBox="0 0 24 24"><path d="M12 2.5 14.2 9.8 21.5 12 14.2 14.2 12 21.5 9.8 14.2 2.5 12 9.8 9.8Z" fill="#1a73e8" /></svg>
+          </div>
+          <div class="uix-app">
+            <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A1.5 1.5 0 0 1 4 14.5Z" fill="#ff5a1f" /></svg>
+          </div>
+        </div>
+        <div id="ch-title" class="uix-chapter-title uix-ko">AI 비서에게<br />일을 맡기는 법</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      var F = UIX.F;
+      UIX.crosses(document.getElementById("ch-crosses"), { cols: 10, rows: 6, keep: 0.7, seed: 11 });
+
+      // 꺼져 가는 화면 선의 잔여 대시
+      tl.set("#ch-dash", { opacity: 1 }, 0);
+      tl.set("#ch-dash", { opacity: 0 }, 3 * F);
+      tl.set("#ch-dash", { opacity: 1, x: 420 }, 6 * F);
+      tl.set("#ch-dash", { opacity: 0 }, 8 * F);
+
+      // 타이틀 묶음: 1프레임 플래시 두 번 후 자리 잡음
+      UIX.titleFlash(tl, "#ch-lock", 3 * F, { s1: 0.6, x1: -360, s2: 1.15, x2: 90 });
+
+      // 금색 사선이 그어짐
+      UIX.draw(tl, ["#ch-gl1", "#ch-gl2"], 4 * F, { dur: 0.42, stagger: 0.1, ease: "power3.out" });
+
+      window.__timelines["ch"] = tl;
+    })();
+  </script>
+</template>

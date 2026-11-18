@@ -1,0 +1,105 @@
+<!-- 씬 "dg": 라이트 캔버스의 숫자 → 카드.
+     숫자 원 6개가 0.1초 간격으로 튀어나오고, 세 그룹으로 벌어지고, 그룹마다
+     카드가 블러 인으로 둘러싼 뒤, 카드 하나씩 파랑 선택 상태가 되며 내용이
+     찬다. 끝은 줌 스루로 다음 라이트 씬에 넘긴다(다음 씬은 UIX.zoomIn으로 시작). -->
+<template>
+  <style>
+    #root { position: absolute; inset: 0; }
+    #dg-stage { position: absolute; inset: 0; }
+    #dg-head {
+      position: absolute; left: 0; right: 0; top: 150px; text-align: center;
+      font-family: var(--uix-font); font-size: 54px; font-weight: 700; letter-spacing: -0.02em; color: var(--uix-ink);
+    }
+    .dg-card { top: 290px; width: 500px; height: 520px; }
+    #dg-c1 { left: 150px; } #dg-c2 { left: 710px; } #dg-c3 { left: 1270px; }
+    .dg-mini { display: flex; align-items: center; gap: 18px; margin-top: 30px; }
+    .dg-mini .uix-panel { position: relative; width: 170px; height: 150px; padding: 16px 18px; }
+    .dg-mini .uix-skel { margin: 12px 0; height: 12px; }
+    .dg-mini svg { width: 46px; height: 24px; }
+    .dg-mini svg path { fill: none; stroke: var(--uix-faint); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .dg-num { position: absolute; top: 720px; }
+    #dg-n1 { left: 650px; } #dg-n2 { left: 762px; } #dg-n3 { left: 874px; }
+    #dg-n4 { left: 986px; } #dg-n5 { left: 1098px; } #dg-n6 { left: 1210px; }
+  </style>
+  <div id="root" data-composition-id="dg" data-width="1920" data-height="1080">
+    <div class="uix-light">
+      <div class="uix-aura" data-layout-allow-overflow></div>
+      <div id="dg-stage" data-layout-allow-overflow>
+        <div id="dg-head">AI에게 일 잘 시키는 6가지 습관</div>
+
+        <div id="dg-c1" class="uix-card dg-card uix-hide">
+          <div class="uix-card-title uix-hide">프롬프트 다듬기</div>
+          <div class="uix-card-sub uix-hide">긴 요청을 짧고 분명하게</div>
+          <div class="dg-mini uix-hide">
+            <div class="uix-panel"><div class="uix-skel f"></div><div class="uix-skel l"></div><div class="uix-skel f"></div><div class="uix-skel m"></div></div>
+            <svg viewBox="0 0 46 24"><path d="M3 12h38M31 4l9 8-9 8" /></svg>
+            <div class="uix-panel"><div class="uix-skel m blue"></div><div class="uix-skel s blue"></div></div>
+          </div>
+        </div>
+        <div id="dg-c2" class="uix-card dg-card uix-hide">
+          <div class="uix-card-title uix-hide">맥락 붙여 주기</div>
+          <div class="uix-card-sub uix-hide">배경 자료를 함께 건네기</div>
+          <div class="dg-mini uix-hide">
+            <div class="uix-panel"><div class="uix-skel l"></div><div class="uix-skel m"></div></div>
+            <svg viewBox="0 0 46 24"><path d="M3 12h38M31 4l9 8-9 8" /></svg>
+            <div class="uix-panel"><div class="uix-skel l blue"></div><div class="uix-skel f blue"></div><div class="uix-skel m blue"></div></div>
+          </div>
+        </div>
+        <div id="dg-c3" class="uix-card dg-card uix-hide">
+          <div class="uix-card-title uix-hide">결과 검증하기</div>
+          <div class="uix-card-sub uix-hide">사실과 숫자는 다시 확인</div>
+          <div class="dg-mini uix-hide">
+            <div class="uix-panel"><div class="uix-skel f"></div><div class="uix-skel l"></div><div class="uix-skel m"></div></div>
+            <svg viewBox="0 0 46 24"><path d="M3 12h38M31 4l9 8-9 8" /></svg>
+            <div class="uix-panel"><div class="uix-skel f blue"></div><div class="uix-skel s hot"></div></div>
+          </div>
+        </div>
+
+        <div id="dg-n1" class="uix-num dg-num uix-hide">1</div>
+        <div id="dg-n2" class="uix-num dg-num uix-hide">2</div>
+        <div id="dg-n3" class="uix-num dg-num uix-hide">3</div>
+        <div id="dg-n4" class="uix-num dg-num uix-hide">4</div>
+        <div id="dg-n5" class="uix-num dg-num uix-hide">5</div>
+        <div id="dg-n6" class="uix-num dg-num uix-hide">6</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var S = UIX.scope("dg");
+      var tl = gsap.timeline({ paused: true });
+      var nums = S.$$(".dg-num");
+      var card = function (n) { return S.$("#dg-c" + n); };
+      var inside = function (n) { return S.$$("#dg-c" + n + " > *"); };
+
+      // 1. 제목은 0프레임부터 보임. 숫자 원 6개가 0.1초 간격으로 팝
+      UIX.pop(tl, nums, 0.3, { stagger: 0.1 });
+
+      // 2. 원이 세 그룹으로 벌어짐 (0.32초)
+      var DX = [-330, -342, -44, -56, -68, 280];
+      nums.forEach(function (n, i) {
+        tl.fromTo(n, { x: 0 }, { x: DX[i], duration: 0.32, ease: "power3.inOut", immediateRender: false }, 1.25);
+      });
+
+      // 3. 그룹마다 카드가 블러 인으로 둘러쌈
+      UIX.blurIn(tl, [card(1), card(2), card(3)], 1.5, { stagger: 0.06 });
+
+      // 4. 카드 하나씩 파랑 선택 상태가 되고 내용이 참
+      [[1, [0, 1], 2.4], [2, [2, 3, 4], 3.6], [3, [5], 4.8]].forEach(function (step, k) {
+        var n = step[0], at = step[2], ns = step[1].map(function (i) { return nums[i]; });
+        UIX.activate(tl, card(n), at);
+        UIX.numOn(tl, ns, at);
+        UIX.blurIn(tl, inside(n), at + 0.08, { stagger: 0.07, y: 10 });
+        if (k < 2) {
+          UIX.deactivate(tl, card(n), at + 1.2);
+          UIX.numOff(tl, ns, at + 1.2);
+        }
+      });
+
+      // 5. 다이어그램이 카메라를 지나쳐 사라짐 (다음 씬은 UIX.zoomIn으로 시작)
+      UIX.zoomThrough(tl, "#dg-stage", 7.05);
+
+      window.__timelines["dg"] = tl;
+    })();
+  </script>
+</template>

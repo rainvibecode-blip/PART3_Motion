@@ -1,0 +1,447 @@
+/* ==========================================================================
+   UIX 키트 — 깔끔한 UI 설명 모션그래픽용 HyperFrames 스타일 (1920×1080)
+   토큰 + 컴포넌트 스타일. index.html <head>에서 한 번만 불러온다:
+     <link rel="stylesheet" href="assets/uix/uix.css" />
+   :root의 --uix-* 변수를 덮어쓰면 색·서체를 모두 바꿀 수 있다.
+   ========================================================================== */
+
+:root {
+  /* 바탕 */
+  --uix-ground: #ffffff;
+  --uix-aura-pink: #f9d3e3;
+  --uix-aura-lilac: #ddd8fb;
+  --uix-aura-peach: #fde3cc;
+  --uix-dark: #161618;
+  --uix-dark-dot: rgba(255, 255, 255, 0.13);
+  --uix-chapter: #131314;
+
+  /* 글자색 */
+  --uix-ink: #1f1f1f;
+  --uix-muted: #5f6368;
+  --uix-faint: #9aa0a6;
+
+  /* 면 */
+  --uix-card: #ffffff;
+  --uix-line: #e3e6eb;
+  --uix-skel: #dde3ea;
+  --uix-skel-strong: #c4ccd7;
+
+  /* 역할 색 (구글 4색 계열) */
+  --uix-blue: #1a73e8;
+  --uix-blue-soft: #e8f0fe;
+  --uix-blue-mid: #aecbfa;
+  --uix-blue-ink: #0b57d0; /* --uix-blue-soft 위의 글자 (AA 5.6:1) */
+  --uix-amber: #fbbc04;
+  --uix-marker: #fbbc04;
+  --uix-green: #34a853;
+  --uix-red: #ea4335;
+  --uix-orange: #ff5a1f;
+  --uix-gold: #e8a33d;
+  --uix-key-alt: #7f7de3;
+  --uix-box-green: #188038; /* 키워드 박스: 흰 글자도 AA 대비 */
+  --uix-box-red: #c5221f;
+
+  /* 서체 */
+  --uix-font: "Pretendard", "Inter", sans-serif;
+  --uix-display: "Oswald", "Pretendard", sans-serif;
+  --uix-serif: "EB Garamond", "Playfair Display", serif;
+
+  /* 모양 */
+  --uix-r-card: 22px;
+  --uix-r-chip: 18px;
+  --uix-r-win: 18px;
+  --uix-shadow-card: 0 2px 4px rgba(32, 33, 36, 0.05), 0 18px 44px -18px rgba(32, 33, 36, 0.3);
+  --uix-shadow-win: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 50px 110px -30px rgba(0, 0, 0, 0.75);
+}
+
+/* --------------------------------------------------------------------------
+   등장하는 요소는 숨긴 채로 시작하고, 타임라인이 드러낸다.
+   -------------------------------------------------------------------------- */
+.uix-hide { opacity: 0; }
+.uix-abs { position: absolute; }
+
+/* --------------------------------------------------------------------------
+   캔버스
+   -------------------------------------------------------------------------- */
+.uix-light {
+  position: absolute; inset: 0; overflow: hidden;
+  background: var(--uix-ground);
+  font-family: var(--uix-font); color: var(--uix-ink);
+}
+.uix-aura {
+  position: absolute; left: -10%; width: 120%; top: -300px; height: 560px;
+  background:
+    radial-gradient(34% 55% at 16% 52%, var(--uix-aura-pink) 0%, rgba(255, 255, 255, 0) 72%),
+    radial-gradient(34% 55% at 50% 44%, var(--uix-aura-lilac) 0%, rgba(255, 255, 255, 0) 72%),
+    radial-gradient(32% 55% at 84% 52%, var(--uix-aura-peach) 0%, rgba(255, 255, 255, 0) 72%);
+  pointer-events: none;
+}
+.uix-dark {
+  position: absolute; inset: 0; overflow: hidden;
+  background-color: var(--uix-dark);
+  background-image: radial-gradient(var(--uix-dark-dot) 1.4px, rgba(0, 0, 0, 0) 2px);
+  background-size: 54px 54px;
+  background-position: 13px 13px;
+  font-family: var(--uix-font); color: #fff;
+}
+.uix-chapter {
+  position: absolute; inset: 0; overflow: hidden;
+  background-color: var(--uix-chapter);
+  font-family: var(--uix-display); color: #fff;
+}
+.uix-crosses { position: absolute; inset: 0; pointer-events: none; }
+.uix-crosses i {
+  position: absolute; width: 12px; height: 12px; margin: -6px 0 0 -6px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.28)) center / 2px 12px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.28)) center / 12px 2px no-repeat;
+}
+
+/* --------------------------------------------------------------------------
+   카드, 스켈레톤 UI, 칩, 노드
+   -------------------------------------------------------------------------- */
+.uix-card {
+  position: absolute;
+  background: var(--uix-card);
+  border: 2px solid var(--uix-line);
+  border-radius: var(--uix-r-card);
+  box-shadow: var(--uix-shadow-card);
+  padding: 30px 32px;
+  font-family: var(--uix-font); color: var(--uix-ink);
+}
+.uix-card-title { font-size: 34px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; }
+.uix-card-sub { font-size: 28px; font-weight: 500; color: var(--uix-muted); margin-top: 8px; }
+.uix-panel {
+  position: absolute; background: #f5f7fa; border-radius: 26px;
+}
+.uix-skel { height: 14px; border-radius: 7px; background: var(--uix-skel); margin: 14px 0; }
+.uix-skel.s { width: 38%; } .uix-skel.m { width: 64%; } .uix-skel.l { width: 86%; } .uix-skel.f { width: 100%; }
+.uix-skel.blue { background: var(--uix-blue-mid); }
+.uix-skel.hot { background: var(--uix-blue); }
+.uix-skel.thick { height: 20px; border-radius: 10px; }
+
+.uix-chip {
+  position: absolute; display: inline-flex; align-items: center; gap: 16px;
+  height: 76px; padding: 0 28px;
+  background: #fff; border: 2px solid var(--uix-line); border-radius: var(--uix-r-chip);
+  box-shadow: var(--uix-shadow-card);
+  font-family: var(--uix-font); font-size: 30px; font-weight: 600; color: var(--uix-ink);
+  white-space: nowrap;
+}
+.uix-chip.pill { border-radius: 999px; }
+.uix-chip .uix-glyphs { display: inline-flex; gap: 10px; }
+
+.uix-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex: none; overflow: hidden;
+  background: radial-gradient(circle at 50% 38%, #f3d2bd 0 24%, rgba(0, 0, 0, 0) 25%),
+              radial-gradient(circle at 50% 100%, #3c4043 0 46%, rgba(0, 0, 0, 0) 47%), #cfd8e3;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--uix-line);
+}
+.uix-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.uix-num {
+  display: inline-grid; place-items: center;
+  width: 60px; height: 60px; border-radius: 50%;
+  background: #fff; border: 2px solid #dadce0;
+  font-family: var(--uix-font); font-size: 28px; font-weight: 600; color: var(--uix-muted);
+}
+.uix-num.on { background: var(--uix-blue-soft); border-color: var(--uix-blue); color: var(--uix-blue-ink); }
+
+.uix-check, .uix-x {
+  display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+  border: 3px solid var(--uix-green); color: var(--uix-green);
+}
+.uix-x { border-color: var(--uix-red); color: var(--uix-red); }
+.uix-check svg, .uix-x svg { width: 22px; height: 22px; }
+
+.uix-app {
+  display: inline-grid; place-items: center;
+  width: 110px; height: 110px; border-radius: 28px; background: #fff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.18), 0 18px 40px -12px rgba(0, 0, 0, 0.5);
+}
+.uix-app img, .uix-app svg { width: 64%; height: 64%; object-fit: contain; }
+
+/* 연결선 (UIX.draw로 그리는 SVG 오버레이) */
+.uix-wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.uix-wires path, .uix-wires line { fill: none; stroke: #c4ccd7; stroke-width: 3; stroke-linecap: round; }
+.uix-wires .blue { stroke: var(--uix-blue); }
+.uix-wires .dash { stroke: var(--uix-red); stroke-dasharray: 10 10; }
+
+/* --------------------------------------------------------------------------
+   화면녹화 연출
+   -------------------------------------------------------------------------- */
+.uix-window {
+  position: absolute; overflow: hidden;
+  background: #202124; border-radius: var(--uix-r-win);
+  box-shadow: var(--uix-shadow-win);
+}
+.uix-window.light { background: #fff; }
+.uix-window-bar {
+  height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 22px;
+  background: rgba(255, 255, 255, 0.06); border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.uix-window.light .uix-window-bar { background: #f1f3f4; border-bottom-color: #e3e6eb; }
+.uix-window-bar i { width: 15px; height: 15px; border-radius: 50%; background: #ff5f57; }
+.uix-window-bar i:nth-child(2) { background: #febc2e; }
+.uix-window-bar i:nth-child(3) { background: #28c840; }
+.uix-window-body { position: absolute; left: 0; right: 0; top: 52px; bottom: 0; }
+.uix-window-body > img, .uix-window-body > video { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+
+.uix-pip {
+  position: absolute; width: 290px; height: 350px; overflow: hidden;
+  border-radius: 30px; border: 5px solid #fff; background: #3a3f47;
+  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.7);
+}
+.uix-pip > img, .uix-pip > video { width: 100%; height: 100%; object-fit: cover; }
+
+.uix-dim {
+  position: absolute; inset: 0; background: rgba(12, 12, 14, 0.52);
+  backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
+}
+.uix-focus {
+  position: absolute; padding: 30px 36px;
+  background: #fff; color: var(--uix-ink);
+  border: 4px solid var(--uix-amber); border-radius: 20px;
+  box-shadow: 0 0 0 1px rgba(251, 188, 4, 0.35), 0 0 46px rgba(251, 188, 4, 0.38), 0 40px 90px -24px rgba(0, 0, 0, 0.7);
+  font-family: var(--uix-font); font-size: 32px; font-weight: 500; line-height: 1.5;
+}
+.uix-focus.dark { background: #1f1f22; color: #e8eaed; }
+
+.uix-mark {
+  background-image: linear-gradient(var(--uix-marker), var(--uix-marker));
+  background-repeat: no-repeat; background-size: 0% 100%; background-position: 0 0;
+  border-radius: 5px; padding: 0 5px; margin: 0 -5px;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+
+.uix-hbox {
+  position: absolute; border: 4px solid var(--uix-amber); border-radius: 14px;
+  box-shadow: 0 0 20px rgba(251, 188, 4, 0.6), inset 0 0 12px rgba(251, 188, 4, 0.25);
+}
+
+.uix-callout { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+.uix-callout-dot {
+  position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; border-radius: 50%;
+  background: var(--uix-amber); box-shadow: 0 0 0 6px rgba(251, 188, 4, 0.3);
+}
+.uix-callout svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.uix-callout svg line, .uix-callout svg path { stroke: var(--uix-amber); stroke-width: 4; fill: none; stroke-linecap: round; }
+.uix-callout-box {
+  position: absolute; background: #fff; color: var(--uix-ink);
+  border-radius: 14px; padding: 18px 28px;
+  font-family: var(--uix-font); font-size: 30px; font-weight: 500; white-space: nowrap;
+  box-shadow: 0 20px 50px -16px rgba(0, 0, 0, 0.55);
+}
+.uix-callout-box b { font-weight: 800; }
+
+.uix-keys { position: absolute; display: flex; align-items: center; gap: 22px; font-family: var(--uix-font); }
+.uix-key {
+  display: inline-grid; place-items: center; min-width: 104px; height: 104px; padding: 0 30px;
+  background: #fff; color: #111; border-radius: 18px;
+  box-shadow: inset 0 -7px 0 rgba(0, 0, 0, 0.12), 0 24px 50px -18px rgba(0, 0, 0, 0.6);
+  font-size: 40px; font-weight: 700;
+}
+.uix-key.alt { background: var(--uix-key-alt); color: #fff; }
+.uix-keys .plus { color: #fff; font-size: 44px; font-weight: 600; }
+
+.uix-ff { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.uix-ff svg { width: 470px; height: 260px; }
+
+.uix-cursor { position: absolute; width: 34px; height: 44px; }
+.uix-ripple {
+  position: absolute; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%;
+  border: 4px solid var(--uix-orange);
+}
+.uix-chevron { position: absolute; width: 64px; height: 64px; }
+.uix-chevron path { fill: none; stroke: #fff; stroke-width: 4; stroke-linejoin: round; }
+.uix-light .uix-chevron path { stroke: var(--uix-ink); }
+
+/* --------------------------------------------------------------------------
+   라벨, 태그, CTA
+   -------------------------------------------------------------------------- */
+.uix-tag {
+  position: absolute; display: inline-block; white-space: nowrap;
+  padding: 10px 22px 8px; border-radius: 10px;
+  background: #111; color: #fff;
+  font-family: var(--uix-display); font-size: 46px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase;
+  box-shadow: 0 0 0 3px var(--uix-amber);
+}
+.uix-tag.light { background: #fff; color: #111; }
+.uix-tag.plain { box-shadow: none; }
+
+.uix-cta { position: absolute; }
+.uix-cta-shape {
+  padding: 12px 48px 10px; background: #111; color: #fff;
+  border: 3px solid #fff; border-radius: 4px;
+  transform: skewX(-16deg);
+  font-family: var(--uix-display); font-size: 48px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+  white-space: nowrap; box-shadow: 0 18px 40px -14px rgba(0, 0, 0, 0.6);
+}
+.uix-cta-shape > span { display: inline-block; transform: skewX(16deg); }
+
+.uix-corner {
+  position: absolute; right: 52px; bottom: 46px;
+  background: #fff; color: #111; border: 2.5px solid #111; border-radius: 12px;
+  padding: 10px 24px; font-family: var(--uix-font); font-size: 36px; font-weight: 500; white-space: nowrap;
+}
+
+.uix-sticker {
+  position: absolute; width: 300px; height: 300px; border-radius: 50%;
+  background: var(--uix-orange); color: #fff;
+  display: grid; place-items: center; text-align: center;
+  font-family: var(--uix-font); font-size: 38px; font-weight: 600; line-height: 1.08; letter-spacing: -0.01em;
+  box-shadow: 0 24px 60px -20px rgba(255, 90, 31, 0.8);
+}
+.uix-sticker > div { width: 72%; }
+
+/* --------------------------------------------------------------------------
+   타이틀
+   -------------------------------------------------------------------------- */
+.uix-title-stack { position: absolute; left: 0; right: 0; text-align: center; font-family: var(--uix-display); text-transform: uppercase; }
+.uix-eyebrow { font-size: 44px; font-weight: 500; letter-spacing: 0.06em; color: var(--uix-blue); }
+.uix-title { font-size: 92px; font-weight: 600; letter-spacing: 0.035em; color: #fff; line-height: 1.05; }
+.uix-sub { font-size: 34px; font-weight: 500; letter-spacing: 0.08em; color: var(--uix-blue); margin-top: 14px; }
+.uix-chapter-title {
+  font-family: var(--uix-display); font-size: 74px; font-weight: 600; letter-spacing: 0.06em; line-height: 1.18;
+  text-transform: uppercase; color: #fff; text-align: center;
+  text-shadow: 0 0 24px rgba(255, 255, 255, 0.25);
+}
+.uix-gold-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.uix-gold-lines path { fill: none; stroke: var(--uix-gold); stroke-width: 3; }
+
+/* --------------------------------------------------------------------------
+   토킹헤드 위 자막
+   -------------------------------------------------------------------------- */
+.uix-caps {
+  position: absolute; left: 160px; right: 160px; bottom: 120px; text-align: center;
+  font-family: var(--uix-font); font-size: 58px; font-weight: 600; line-height: 1.34; letter-spacing: -0.01em;
+  color: #fff; text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6), 0 0 2px rgba(0, 0, 0, 0.5);
+}
+.uix-caps .hl { color: #ffc83d; }
+.uix-w { display: inline-block; white-space: pre; }
+
+/* --------------------------------------------------------------------------
+   헤드라인 몽타주 / 인용 카드
+   -------------------------------------------------------------------------- */
+.uix-split-dark { position: absolute; left: 0; top: 0; width: 50%; height: 100%; background: #1b1b1d; }
+.uix-split-light {
+  position: absolute; left: 50%; top: 0; width: 50%; height: 100%; background: #f3f3f1;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.16) 1.4px, rgba(0, 0, 0, 0) 2px); background-size: 54px 54px;
+}
+.uix-headline { position: absolute; width: 760px; text-align: center; font-family: var(--uix-font); }
+.uix-headline .src { font-family: var(--uix-serif); font-size: 52px; font-weight: 700; letter-spacing: 0.02em; margin-bottom: 30px; }
+.uix-headline .hd { font-size: 54px; font-weight: 700; line-height: 1.45; letter-spacing: -0.01em; }
+.uix-headline.on-dark { color: #fff; }
+.uix-headline.on-light { color: #4a4a4a; }
+.uix-key-box.red { --box: var(--uix-box-red); }
+.uix-key-box {
+  background-image: linear-gradient(var(--box, var(--uix-box-green)), var(--box, var(--uix-box-green)));
+  background-repeat: no-repeat; background-size: 0% 100%; padding: 0 8px; margin: 0 -4px; border-radius: 4px; color: inherit;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.uix-quote {
+  position: absolute; background: #fff; border-radius: 16px; padding: 34px 44px;
+  font-family: var(--uix-serif); font-size: 60px; line-height: 1.18; color: #111;
+  box-shadow: 0 30px 80px -24px rgba(0, 0, 0, 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   문서 + 스캔 라인
+   -------------------------------------------------------------------------- */
+.uix-doc {
+  position: absolute; width: 400px; height: 520px; padding: 34px 30px;
+  background: #fff; border: 2px solid var(--uix-line); border-radius: 18px; box-shadow: var(--uix-shadow-card);
+  overflow: hidden;
+}
+.uix-doc .ph { height: 120px; border-radius: 12px; background: #eef1f5; margin: 10px 0 18px; }
+.uix-scan { position: absolute; left: -10px; right: -10px; top: 0; height: 4px; }
+.uix-scan .beam { position: absolute; inset: 0; background: var(--uix-blue); border-radius: 2px; box-shadow: 0 0 16px rgba(26, 115, 232, 0.85); }
+.uix-scan .trail {
+  position: absolute; left: 10px; right: 10px; bottom: 4px; height: 90px;
+  background: linear-gradient(to top, rgba(26, 115, 232, 0.2), rgba(26, 115, 232, 0));
+}
+.uix-scan .knob { position: absolute; top: -5px; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--uix-blue); }
+.uix-scan .knob.l { left: -2px; } .uix-scan .knob.r { right: -2px; }
+
+/* UIX.crtOff가 쓰는 TV 끄기 선 */
+.uix-crt-v, .uix-crt-h { position: absolute; left: 50%; top: 50%; background: #fff; opacity: 0; box-shadow: 0 0 14px rgba(255, 255, 255, 0.9); }
+.uix-crt-v { width: 4px; height: 100%; margin-left: -2px; top: 0; background: linear-gradient(#ffb36b, #ffffff 50%, #8fd3ff); }
+.uix-crt-h { width: 520px; height: 3px; margin: -1.5px 0 0 -260px; }
+
+/* --------------------------------------------------------------------------
+   한글 문구: 콘덴스드 영문 디스플레이 서체(Oswald)에는 한글이 없다.
+   한글 제목은 Pretendard ExtraBold, 좁은 자간, 대문자 변환 없음으로 쓴다.
+   디스플레이 클래스(.uix-title, .uix-chapter-title, .uix-tag,
+   .uix-cta-shape, .uix-tip-title) 옆에 .uix-ko를 붙인다.
+   -------------------------------------------------------------------------- */
+.uix-ko { font-family: var(--uix-font) !important; font-weight: 800 !important; letter-spacing: -0.02em !important; text-transform: none !important; }
+
+/* --------------------------------------------------------------------------
+   자리표시자 (실제 인물 아님): 본인 영상으로 바꾼다
+   -------------------------------------------------------------------------- */
+.uix-talk-ph {
+  position: absolute; inset: 0; overflow: hidden;
+  background:
+    radial-gradient(48% 60% at 74% 26%, rgba(255, 214, 170, 0.22) 0%, rgba(0, 0, 0, 0) 70%),
+    radial-gradient(40% 50% at 18% 40%, rgba(120, 140, 170, 0.25) 0%, rgba(0, 0, 0, 0) 70%),
+    linear-gradient(180deg, #3a3e46 0%, #23262b 100%);
+}
+.uix-person { position: absolute; inset: 0; width: 100%; height: 100%; }
+.uix-person circle, .uix-person path { fill: #59606b; }
+
+/* --------------------------------------------------------------------------
+   TIP 타이틀 카드
+   -------------------------------------------------------------------------- */
+.uix-tip { position: absolute; inset: 0; overflow: hidden; }
+.uix-tip-ground { position: absolute; inset: 0; background: #161618; }
+.uix-tip svg.uix-wedges { position: absolute; inset: 0; width: 100%; height: 100%; }
+.uix-tip-lock { position: absolute; left: 0; right: 0; top: 400px; text-align: center; }
+.uix-tip-eyebrow { font-family: var(--uix-display); font-size: 44px; font-weight: 500; letter-spacing: 0.08em; color: #4c8df6; }
+.uix-tip-title { font-family: var(--uix-display); font-size: 96px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: #fff; line-height: 1.1; display: inline-block; }
+.uix-tip-sub { font-family: var(--uix-font); font-size: 34px; font-weight: 600; letter-spacing: 0.02em; color: #4c8df6; margin-top: 10px; }
+.uix-outline { color: transparent !important; -webkit-text-stroke: 2px #ffffff; }
+
+/* --------------------------------------------------------------------------
+   규모 격자 + 글리치 줄무늬
+   -------------------------------------------------------------------------- */
+.uix-cell {
+  position: absolute; width: 40px; height: 50px; border-radius: 7px;
+  background: #fff; border: 2px solid var(--uix-line);
+}
+.uix-glitch { position: absolute; inset: 0; pointer-events: none; opacity: 0; overflow: hidden; }
+.uix-glitch i {
+  position: absolute; left: 0; width: 100%;
+  background: linear-gradient(90deg, rgba(255, 0, 90, 0.6), rgba(255, 255, 255, 0.35) 50%, rgba(0, 220, 255, 0.6));
+  mix-blend-mode: screen;
+}
+.uix-glitch i:nth-child(1) { top: 12%; height: 46px; }
+.uix-glitch i:nth-child(2) { top: 31%; height: 18px; }
+.uix-glitch i:nth-child(3) { top: 47%; height: 64px; }
+.uix-glitch i:nth-child(4) { top: 70%; height: 26px; }
+.uix-glitch i:nth-child(5) { top: 84%; height: 40px; }
+
+/* 창 안의 다크 앱 목업 UI (스켈레톤 막대로 그림) */
+.uix-mock { position: absolute; inset: 0; display: flex; font-family: var(--uix-font); }
+.uix-mock-side { width: 300px; padding: 26px 20px; background: rgba(255, 255, 255, 0.03); border-right: 1px solid rgba(255, 255, 255, 0.06); }
+.uix-mock-row { height: 46px; border-radius: 10px; margin-bottom: 10px; display: flex; align-items: center; padding: 0 16px; }
+.uix-mock-row i { display: block; height: 12px; border-radius: 6px; background: rgba(255, 255, 255, 0.16); }
+.uix-mock-row.sel { background: rgba(138, 180, 248, 0.16); }
+.uix-mock-row.sel i { background: rgba(138, 180, 248, 0.7); }
+.uix-mock-main { position: relative; flex: 1; padding: 40px 70px; }
+.uix-bubble { max-width: 640px; border-radius: 22px; padding: 22px 28px; margin-bottom: 24px; font-size: 28px; font-weight: 500; line-height: 1.5; }
+.uix-bubble.me { margin-left: auto; background: #303134; color: #e8eaed; }
+.uix-bubble.ai { background: transparent; color: #e8eaed; padding-left: 0; }
+.uix-bubble .uix-skel { background: rgba(255, 255, 255, 0.16); margin: 12px 0; }
+.uix-input {
+  position: absolute; left: 70px; right: 70px; bottom: 40px; height: 84px; border-radius: 42px;
+  background: #303134; display: flex; align-items: center; padding: 0 34px; color: #9aa0a6; font-size: 28px; font-weight: 500;
+}
+.uix-send { position: absolute; right: 16px; top: 14px; width: 56px; height: 56px; border-radius: 50%; background: #8ab4f8; }
+
+/* 열리고 접히는 태그 (UIX.tagIn / UIX.tagOut): 래퍼 + 박스 + 글자 */
+.uix-tagwrap { position: absolute; display: inline-block; padding: 10px 26px 8px; white-space: nowrap; }
+.uix-tagwrap > .box { position: absolute; inset: 0; background: #111; border-radius: 10px; box-shadow: 0 0 0 3px var(--uix-amber); }
+.uix-tagwrap > .txt {
+  position: relative; color: #fff;
+  font-family: var(--uix-display); font-size: 46px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase;
+}

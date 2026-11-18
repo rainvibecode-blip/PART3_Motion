@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <!-- UI 설명 모션 키트: 토큰 + 컴포넌트, 그다음 타임라인 헬퍼(window.UIX) -->
+    <link rel="stylesheet" href="assets/uix/uix.css" />
+    <script src="assets/uix/uix.js"></script>
+    <style>
+      /* Pretendard (SIL OFL 1.1) — 본문과 모든 한글 제목 */
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-Medium.woff2") format("woff2"); font-weight: 500; }
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-SemiBold.woff2") format("woff2"); font-weight: 600; }
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-Bold.woff2") format("woff2"); font-weight: 700; }
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-ExtraBold.woff2") format("woff2"); font-weight: 800; }
+
+      /* 브랜드 색은 여기서 바꾼다: assets/uix/uix.css의 --uix-* 토큰 무엇이든 */
+      :root {
+        --uix-blue: #1a73e8;
+        --uix-amber: #fbbc04;
+      }
+
+      /* 키트가 쓰는 번들 서체. 렌더 컴파일러는 이 파일에 적힌 서체 이름만
+         임베드하고 링크된 uix.css는 읽지 않아서 여기에 이름을 적어 둔다. 지우지 않는다. */
+      .uix-font-names { font-family: "Inter", "Oswald", "EB Garamond", "Playfair Display", "JetBrains Mono"; }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #ffffff; }
+      #root { position: relative; width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <!-- 장면 호스트를 이 안에 순서대로 넣는다. 형식은 uix-ref/starter-index.html 을 본다.
+         호스트 id = data-composition-id = 씬 파일 루트의 data-composition-id = __timelines 키.
+         루트의 data-duration 이 영상 전체 길이(초)다. -->
+    <div id="root" data-composition-id="main" data-start="0" data-duration="10" data-width="1920" data-height="1080">
+    </div>
+    <script>
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>

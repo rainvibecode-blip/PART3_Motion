@@ -58,20 +58,42 @@ routes.new = async (main) => {
   <form class="form" id="f" style="grid-template-columns:minmax(0,860px)">
     <div>
       <div class="field"><label>제목</label><input type="text" name="title" required maxlength="60" placeholder="예: 클로드코드 스킬 추천"><span class="hint">폴더 이름은 오늘 날짜 + 제목(공백→하이픈)으로 만들어집니다.</span></div>
-      <div class="field"><label>스타일</label><div class="styles" id="styles">${Object.entries(info.styles).map(([k, s]) => `<div class="scard on" data-k="${k}" role="checkbox" aria-checked="true"><b>${esc(s.name)}</b><small>${esc(s.tagline)}</small></div>`).join("")}</div><span class="hint">${esc(info.styles.mono.desc)}</span></div>
+      <div class="field"><label id="style-label">스타일</label><div class="styles" id="styles" role="radiogroup" aria-labelledby="style-label">${Object.entries(info.styles).map(([k, s]) => `<div class="scard" data-k="${k}" role="radio" tabindex="0" aria-checked="false"><b>${esc(s.name)}</b><small>${esc(s.tagline)}</small></div>`).join("")}</div><span class="hint" id="style-desc"></span></div>
       <div class="field"><label>원고</label><textarea name="script" required style="min-height:320px" placeholder="대본을 그대로 붙여넣으세요. 문단이 장면 경계가 됩니다."></textarea></div>
       <div class="field"><label>연출 아이디어 (선택)</label><textarea name="guide" style="min-height:120px" placeholder="장면별 연출 아이디어를 적으세요. 예:&#10;- 도입: 서버 아이콘 5개가 하나씩 쌓임&#10;- 두 번째 문단: 좌우 비교"></textarea><span class="hint">참고용입니다. 원고에 더 맞는 연출이 있으면 에이전트가 바꿀 수 있습니다.</span></div>
       <div class="field"><label>추가 지시 (선택)</label><textarea name="extra" style="min-height:70px" placeholder="예: 장면은 5개 이내로, 두 번째 문단은 단계 구도로"></textarea></div>
       <button class="btn primary" type="submit" id="go" style="width:100%;justify-content:center;padding:12px">${icon("play")}만들기 시작</button>
-      <p class="hint" style="margin-top:8px">${info.installed ? "" : "처음 실행할 때는 영상 엔진(Remotion)과 렌더용 브라우저를 내려받습니다. 몇 분 더 걸립니다. "}${ENGINE[st.engine]}로 실행합니다. 엔진은 설정에서 바꿉니다. 중간에 멈추려면 작업 페이지에서 '취소'.</p>
+      <p class="hint" style="margin-top:8px"><span id="first-run"></span>${ENGINE[st.engine]}로 실행합니다. 엔진은 설정에서 바꿉니다. 중간에 멈추려면 작업 페이지에서 '취소'.</p>
     </div>
   </form>`;
+  // 스타일은 하나만 고른다. 마지막에 고른 스타일을 기억한다.
+  let style = (() => { try { return localStorage.getItem("style"); } catch { return null; } })();
+  if (!info.styles[style]) style = Object.keys(info.styles)[0];
+  const pickStyle = (k) => {
+    style = k;
+    try { localStorage.setItem("style", k); } catch {}
+    $("#styles").querySelectorAll(".scard").forEach((c) => { const on = c.dataset.k === k; c.classList.toggle("on", on); c.setAttribute("aria-checked", String(on)); });
+    $("#style-desc").textContent = info.styles[k].desc;
+    $("#first-run").textContent = info.styles[k].kit === "hyperframes"
+      ? "처음 실행할 때는 영상 엔진(HyperFrames)과 렌더용 브라우저를 내려받습니다. 1~2분 더 걸립니다. "
+      : info.installed ? "" : "처음 실행할 때는 영상 엔진(Remotion)과 렌더용 브라우저를 내려받습니다. 몇 분 더 걸립니다. ";
+  };
+  $("#styles").onclick = (e) => { const c = e.target.closest(".scard"); if (c) pickStyle(c.dataset.k); };
+  $("#styles").onkeydown = (e) => {
+    const c = e.target.closest(".scard"); if (!c) return;
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pickStyle(c.dataset.k); }
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      const all = [...$("#styles").querySelectorAll(".scard")], n = all.indexOf(c) + (e.key === "ArrowRight" ? 1 : -1);
+      const next = all[(n + all.length) % all.length]; next.focus(); pickStyle(next.dataset.k);
+    }
+  };
+  pickStyle(style);
   const f = $("#f");
   f.onsubmit = async (e) => {
     e.preventDefault(); const fd = new FormData(f), go = $("#go");
     go.disabled = true;
     try {
-      const job = await api("/api/jobs", { style: "mono", title: fd.get("title"), script: fd.get("script"), guide: fd.get("guide"), extra: fd.get("extra") });
+      const job = await api("/api/jobs", { style, title: fd.get("title"), script: fd.get("script"), guide: fd.get("guide"), extra: fd.get("extra") });
       location.hash = `#/job/${job.id}`;
     } catch (err) { toast(err.message); go.disabled = false; }
   };
@@ -80,22 +102,22 @@ routes.new = async (main) => {
 // ── 영상 ─────────────────────────────────────────────────────
 const thumb = (v) => v.stills.length ? `<img class="row-thumb" loading="lazy" src="${media(v.name, "output", "stills", v.stills[v.stills.length - 1])}" alt="">` : `<span class="row-thumb empty-thumb">미리보기 없음</span>`;
 routes.videos = async (main) => {
-  const videos = await api("/api/videos");
+  const [videos, info] = await Promise.all([api("/api/videos"), api("/api/info")]);
   main.innerHTML = `<div class="head"><div><h1>영상 ${videos.length}편</h1><p class="sub">만든 영상은 videos 폴더에 날짜_제목으로 저장됩니다.</p></div><div class="actions"><a class="btn primary" href="#/new">${icon("plus")}새 영상 만들기</a></div></div><div class="jlist" id="vl"></div>`;
   const list = $("#vl");
   if (!videos.length) list.innerHTML = `<div class="empty">아직 만든 영상이 없습니다. '새 영상 만들기'에서 원고를 넣어 보세요.</div>`;
   for (const v of videos) {
-    const el = h(`<div class="jrow" role="link" tabindex="0">${thumb(v)}<div><div class="t">${esc(v.title)}</div><div class="s">${esc(v.date)} · ${v.full ? `장면 ${v.clips.length}개 · 전체본 있음` : "아직 렌더하지 않음"}</div></div><span class="chip soft">흑백</span><span class="muted">${icon("chevron-right")}</span></div>`);
+    const el = h(`<div class="jrow" role="link" tabindex="0">${thumb(v)}<div><div class="t">${esc(v.title)}</div><div class="s">${esc(v.date)} · ${v.full ? `장면 ${v.clips.length}개 · 전체본 있음` : "아직 렌더하지 않음"}</div></div><span class="chip soft">${esc(info.styles[v.style]?.chip || "흑백")}</span><span class="muted">${icon("chevron-right")}</span></div>`);
     el.onclick = () => (location.hash = `#/video/${encodeURIComponent(v.name)}`); el.onkeydown = (e) => { if (e.key === "Enter") el.click(); };
     list.append(el);
   }
 };
 routes.video = async (main, name) => {
-  const v = await api(`/api/videos/${encodeURIComponent(name)}`);
+  const [v, info] = await Promise.all([api(`/api/videos/${encodeURIComponent(name)}`), api("/api/info")]);
   const files = [...(v.full ? [{ label: "전체본", file: ["output", "전체.mp4"] }] : []), ...v.clips.map((c) => ({ label: c.replace(/\.mp4$/, ""), file: ["output", "장면별", c] }))];
   const running = v.jobs.find(live);
   main.innerHTML = `<a class="back" href="#/videos">${icon("arrow-left")}영상 목록</a>
-  <div class="head"><div><h1>${esc(v.title)}</h1><p class="sub head-meta"><span class="chip">흑백 인포그래픽</span><span class="mono">${esc(v.name)}</span></p></div><div class="actions"><button class="btn" id="open">${icon("folder")}폴더 열기</button></div></div>
+  <div class="head"><div><h1>${esc(v.title)}</h1><p class="sub head-meta"><span class="chip">${esc(info.styles[v.style]?.name || "흑백 인포그래픽")}</span><span class="mono">${esc(v.name)}</span></p></div><div class="actions"><button class="btn" id="open">${icon("folder")}폴더 열기</button></div></div>
   ${running ? `<div class="panel" style="margin-bottom:20px"><span class="dot ${running.status}"></span> 이 영상의 작업이 ${STATUS[running.status]}입니다. <a href="#/job/${running.id}" style="color:var(--ink);font-weight:600">로그 열기</a></div>` : ""}
   ${files.length ? `<div class="board"><div class="clist" id="cl"></div><div class="player"><div class="stage"><video id="pv" controls></video></div><div class="actions"><a class="btn" id="dl" download>${icon("download")}이 파일 받기</a></div></div></div>` : `<div class="empty">아직 렌더한 영상이 없습니다.</div>`}
   <section class="panel" style="margin-top:24px"><h2>수정 요청</h2><form id="rev"><div class="field"><textarea name="note" required style="min-height:90px" placeholder="예: 두 번째 장면의 아이콘을 서버로 바꾸고, 마지막 장면을 3초 더 길게"></textarea></div><button class="btn primary" type="submit">${icon("play")}수정 시작</button></form></section>
@@ -174,6 +196,7 @@ routes.settings = async (main) => {
     <div class="field"><label>말 속도 (글자/초)</label><input type="number" name="charsPerSec" min="2" max="15" step="0.1" value="${esc(s.charsPerSec)}"><span class="hint">원고 길이로 영상 길이를 추정할 때 씁니다. 공백을 뺀 글자 수 기준입니다.</span></div>
     <div class="field"><label>Claude Code 실행 파일</label><input type="text" name="claudePath" value="${esc(s.claudePath)}"><span class="hint">터미널에서 claude가 실행되면 그대로 두세요. 찾지 못하면 전체 경로를 넣습니다.</span></div>
     <div class="field"><label>Codex 실행 파일</label><input type="text" name="codexPath" value="${esc(s.codexPath)}"></div>
+    <div class="field"><label>UI 해설 모션 스킬 폴더</label><input type="text" name="uixSkillPath" value="${esc(s.uixSkillPath)}" placeholder="비워 두면 동봉본(skills/ui-explainer-motion)"><span class="hint">내가 고치는 원본 스킬을 바로 쓰려면 그 폴더의 전체 경로를 넣습니다(예: ~/…/PART3_Motion/.claude/skills/ui-explainer-motion). 지금 쓰는 폴더: <span class="mono">${esc(info.uixSkill)}</span></span></div>
     <button class="btn primary" type="submit">저장</button>
   </form>`;
   $("#sf").onsubmit = async (e) => {

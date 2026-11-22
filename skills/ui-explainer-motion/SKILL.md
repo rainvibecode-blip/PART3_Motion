@@ -27,7 +27,7 @@ AI·생산성 해설 유튜브에서 흔한 "정돈된 UI 설명" 모션 문법�
 
 얼굴·화면 자리에는 실루엣과 스켈레톤 목업이 들어 있으니 사용자 본인 영상으로 바꾼다.
 
-HyperFrames 렌더 계약(타임라인 등록, `fromTo`, 결정적 렌더, 폰트, 자산 경로)은 `/hyperframes` 스킬이 기준이다. 씬을 새로 쓰거나 크게 고치기 전에 먼저 읽는다.
+HyperFrames 렌더 계약(타임라인 등록, `fromTo`, 결정적 렌더, 폰트, 자산 경로)은 `/hyperframes` 스킬이 기준이다. 설치돼 있으면 씬을 새로 쓰거나 크게 고치기 전에 먼저 읽는다.
 
 ## 구성
 
@@ -45,7 +45,7 @@ scripts/install-kit.sh  위 파일을 프로젝트에 복사
 
 ### 1. 프로젝트에 키트 넣기
 
-이 스킬은 `PART3_Motion/.claude/skills/ui-explainer-motion/`에 있는 프로젝트 전용 스킬이다. 아래 명령은 `PART3_Motion` 폴더에서 실행한다.
+아래 명령의 `.claude/skills/ui-explainer-motion`은 이 파일이 있는 폴더를 뜻한다.
 
 새 프로젝트:
 
@@ -96,7 +96,7 @@ bash .claude/skills/ui-explainer-motion/scripts/install-kit.sh <dir> --scenes dg
 - **본인 영상·화면**:
   - `tk`의 `#tk-face`, `sc`의 `.uix-window-body`와 `#sc-pip`에 `<video>`를 넣는다(각 파일 맨 위 주석에 예시).
   - 화면녹화는 `muted`로 넣고, 말소리는 별도 `<audio>` 또는 `data-has-audio="true"`로 처리한다.
-  - 영상·음성·음악 준비는 `/media-use`로 한다.
+  - 영상·음성·음악 준비는 `/media-use`가 있으면 그것으로 한다.
 - **자막 타이밍**: 단어 span에 `data-t`(자막 시작부터의 초)를 적는다.
 - **좌표**(하이라이트 박스, 커서, 주석): 실제 화면에 맞춘다. 푸시 인이 끝난 뒤 배율을 기준으로 한다.
 

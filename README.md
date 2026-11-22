@@ -25,16 +25,12 @@
 
 ## 1. 받기
 
-터미널을 엽니다.
+강의 실습 자료의 `완성본.zip`을 내려받아 압축을 풉니다.
 
-아래 두 줄을 한 줄씩 넣습니다.
-
-```bash
-git clone https://github.com/rainvibecode-blip/PART3_Motion.git
-```
+터미널을 열고 푼 폴더로 이동합니다. 아래는 다운로드 폴더에 풀었을 때입니다.
 
 ```bash
-cd PART3_Motion
+cd ~/Downloads/Studio_001_final
 ```
 
 <br>

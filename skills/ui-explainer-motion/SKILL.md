@@ -12,14 +12,13 @@ description: >-
   - 토킹헤드 위: 키네틱 자막, 모프 스티커
   사용자가 구글 머티리얼처럼 깔끔한 UI 스타일의 해설·튜토리얼·AI 팁·생산성 유튜브 모션그래픽을
   원할 때 쓴다. "UI 설명 모션", "스켈레톤 UI 다이어그램", "스포트라이트 크롭", "TV 끄기 전환",
-  "TIP 타이틀 카드", "화면녹화 연출", "줌 스루 전환", "Jeff Su 스타일 모션",
-  "JeffSu_motion_reference 모션 재사용"이라고 하거나, 그 레퍼런스에서 분석한 모션을 다시 쓰려 할 때도 쓴다.
+  "TIP 타이틀 카드", "화면녹화 연출", "줌 스루 전환"이라고 하거나, 이 키트의 모션을 다시 쓰려 할 때도 쓴다.
   카드 캐러셀 리스티클(card-carousel-reel), 슬라이드 덱, 특정 크리에이터 영상 그대로 따라 만들기에는 쓰지 않는다.
 ---
 
 # UI 설명 모션
 
-AI·생산성 해설 유튜브에서 흔한 "정돈된 UI 설명" 모션 문법을 HyperFrames 부품으로 묶은 스킬이다. 출처는 Jeff Su 채널 최근 3편을 프레임 단위로 잰 분석(`PART3_Motion/JeffSu_motion_reference/README.md`)이다. 기본 타이밍은 거기서 잰 값이다.
+AI·생산성 해설 유튜브에서 흔한 "정돈된 UI 설명" 모션 문법을 HyperFrames 부품으로 묶은 스킬이다. 기본 타이밍은 해설 영상을 프레임 단위로 재서 정했다.
 
 **스타일만 가져온다.** 다음 것은 결과물에 넣지 않는다.
 - 원작자의 얼굴, 목소리, 화면, 로고, 채널명
@@ -52,7 +51,7 @@ scripts/install-kit.sh  위 파일을 프로젝트에 복사
 
 ```bash
 npx hyperframes init <dir> --skip-skills --skill=hyperframes
-.claude/skills/ui-explainer-motion/scripts/install-kit.sh <dir> --starter
+bash .claude/skills/ui-explainer-motion/scripts/install-kit.sh <dir> --starter
 ```
 
 `--starter`가 하는 일:
@@ -62,7 +61,7 @@ npx hyperframes init <dir> --skip-skills --skill=hyperframes
 이미 있는 프로젝트에는 필요한 씬만 넣는다.
 
 ```bash
-.claude/skills/ui-explainer-motion/scripts/install-kit.sh <dir> --scenes dg,sc
+bash .claude/skills/ui-explainer-motion/scripts/install-kit.sh <dir> --scenes dg,sc
 ```
 
 키트·폰트·효과음은 항상 덮어쓰고, 씬 파일은 이미 있으면 건드리지 않는다. 기존 `index.html`의 `<head>`에는 스크립트가 출력하는 세 가지를 넣는다.

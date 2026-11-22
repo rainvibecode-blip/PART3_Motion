@@ -23,6 +23,8 @@ const DATA = path.join(ROOT, "data");
 const JOBS_DIR = path.join(DATA, "jobs");
 const PORT = Number(process.env.PORT || 3000);
 const WIN = process.platform === "win32";
+// 윈도우는 셸을 거쳐 실행하므로 빈칸 · 괄호가 있는 인수를 따옴표로 묶는다.
+const winArg = (a) => (/[\s()&|<>^"]/.test(a) ? `"${a.replace(/"/g, '""')}"` : a);
 for (const d of [VIDEOS, JOBS_DIR]) fs.mkdirSync(d, { recursive: true });
 
 // ── 스타일 · 모델 ────────────────────────────────────────────
@@ -216,7 +218,7 @@ function readLines(stream, onLine) {
 function run(job, cmd, args, cwd, { stdin, onLine, env } = {}) {
   return new Promise((resolve) => {
     let p;
-    try { p = spawn(cmd, args, { cwd, env: childEnv(env), stdio: ["pipe", "pipe", "pipe"], shell: WIN }); }
+    try { p = spawn(WIN ? winArg(cmd) : cmd, WIN ? args.map(winArg) : args, { cwd, env: childEnv(env), stdio: ["pipe", "pipe", "pipe"], shell: WIN }); }
     catch (e) { return resolve({ code: 1, error: e }); }
     job.proc = p;
     p.once("error", (error) => resolve({ code: 1, error }));
